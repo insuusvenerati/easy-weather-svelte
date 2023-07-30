@@ -14,7 +14,7 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-	// Create a new cache and add all files to it
+	console.log('Installing service worker');
 	async function addFilesToCache() {
 		const cache = await caches.open(CACHE);
 		await cache.addAll(ASSETS);
@@ -24,7 +24,7 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-	// Remove previous cached data from disk
+	console.log('Activating service worker');
 	async function deleteOldCaches() {
 		for (const key of await caches.keys()) {
 			if (key !== CACHE) await caches.delete(key);
@@ -44,6 +44,7 @@ self.addEventListener('fetch', (event) => {
 
 		// `build`/`files` can always be served from the cache
 		if (ASSETS.includes(url.pathname)) {
+			console.log('Serving from cache', event.request.url);
 			return cache.match(url.pathname);
 		}
 
@@ -53,11 +54,13 @@ self.addEventListener('fetch', (event) => {
 			const response = await fetch(event.request);
 
 			if (response.status === 200) {
+				console.log('Caching', event.request.url);
 				cache.put(event.request, response.clone());
 			}
 
 			return response;
 		} catch {
+			console.log('Serving from cache', event.request.url);
 			return cache.match(event.request);
 		}
 	}

@@ -14,13 +14,13 @@ export const load = (async ({ url, fetch }) => {
 	const locationData: LocationData = await locationResponse.json();
 
 	const response = await fetch(
-		`${env.API_URL}/forecast/${env.API_KEY}/${locationData.places[0].latitude},${locationData.places[0].longitude}`
+		`${env.API_URL}/forecast/${env.API_KEY}/${locationData.places[0].latitude},${locationData.places[0].longitude}?exclude=minutely,hourly,alerts`
 	);
 
+	const weatherData: WeatherResponse = await response.json();
+
 	return {
-		streamed: {
-			weather: response.json() as Promise<WeatherResponse>,
-			location: locationData.places[0]['place name']
-		}
+		weather: weatherData,
+		location: locationData.places[0]['place name']
 	};
 }) satisfies PageServerLoad;
