@@ -1,9 +1,9 @@
 <script lang="ts">
-	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
-	import '@skeletonlabs/skeleton/styles/skeleton.css';
-	import '../app.postcss';
-	import { AppShell } from '@skeletonlabs/skeleton';
 	import Search from '$lib/components/Search.svelte';
+	import { AppShell } from '@skeletonlabs/skeleton';
+	import '@skeletonlabs/skeleton/styles/skeleton.css';
+	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
+	import '../app.postcss';
 </script>
 
 <AppShell slotPageContent="p-4" slotPageHeader="p-4">
@@ -16,5 +16,4 @@
 		</div>
 	</svelte:fragment>
 	<slot />
-	<svelte:fragment slot="pageFooter">Page Footer</svelte:fragment>
 </AppShell>

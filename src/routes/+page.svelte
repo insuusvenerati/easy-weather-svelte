@@ -4,6 +4,7 @@
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import { getWeatherIconUrl } from '$lib/util';
+	import Alerts from '$lib/components/Alerts.svelte';
 
 	export let data: PageData;
 </script>
@@ -12,6 +13,19 @@
 	<title>Easy Weather ⛅ {data.location ? `- ${data.location}` : ''}</title>
 	<meta name="description" content="Weather, but easy." />
 </svelte:head>
+<Accordion>
+	{#if data.weather?.alerts}
+		<AccordionItem>
+			<svelte:fragment slot="lead">⚠️</svelte:fragment>
+			<svelte:fragment slot="summary">
+				{data.weather.alerts.length} active alert{data.weather.alerts.length > 1 ? 's' : ''}
+			</svelte:fragment>
+			<svelte:fragment slot="content">
+				<Alerts alerts={data.weather.alerts} />
+			</svelte:fragment>
+		</AccordionItem>
+	{/if}
+</Accordion>
 <div class="flex flex-col gap-4">
 	<Accordion>
 		{#if data.weather?.hourly.data}
