@@ -29,3 +29,17 @@ export const getMoonphaseIconUrl = (moonphase: number, url: string = MOON_ICON_U
 	if (moonphase >= 0.125) return `${url}moon-first-quarter.svg`;
 	return `${url}moon-new.svg`;
 };
+
+export const getPrecipIntensity = (intensity: number) => {
+	if (intensity === 0) {
+		return 'No precipitation';
+	} else if (intensity < 0.002) {
+		return 'Very light precipitation';
+	} else if (intensity < 0.017) {
+		return 'Light precipitation';
+	} else if (intensity < 0.1) {
+		return 'Moderate precipitation';
+	} else {
+		return 'Heavy precipitation';
+	}
+};
