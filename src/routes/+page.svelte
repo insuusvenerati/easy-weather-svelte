@@ -5,10 +5,15 @@
 	export let data: PageData;
 </script>
 
-{#if data?.weather?.daily.data && data?.location}
+<svelte:head>
+	<title>Easy Weather ⛅ {data.location ? `| ${data.location}` : ''}</title>
+	<meta name="description" content="Weather, but easy." />
+</svelte:head>
+
+{#if data.weather?.daily.data && data.location}
 	<div class="grid grid-cols-3 gap-4">
 		{#each data.weather.daily.data as day}
-			<Card city={data?.location} {day} />
+			<Card city={data.location} {day} />
 		{/each}
 	</div>
 {/if}
