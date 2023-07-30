@@ -5,15 +5,17 @@
 
 import { build, files, version } from '$service-worker';
 
+const sw = self as unknown as ServiceWorkerGlobalScope;
+
 // Create a unique cache name for this deployment
 const CACHE = `cache-${version}`;
 
 const ASSETS = [
-	...build, // the app itself
+	...build, // the app itsw
 	...files // everything in `static`
 ];
 
-self.addEventListener('install', (event) => {
+sw.addEventListener('install', (event) => {
 	console.log('Installing service worker');
 	async function addFilesToCache() {
 		const cache = await caches.open(CACHE);
@@ -23,18 +25,31 @@ self.addEventListener('install', (event) => {
 	event.waitUntil(addFilesToCache());
 });
 
-self.addEventListener('activate', (event) => {
+sw.addEventListener('activate', (event) => {
 	console.log('Activating service worker');
+
 	async function deleteOldCaches() {
 		for (const key of await caches.keys()) {
 			if (key !== CACHE) await caches.delete(key);
 		}
 	}
 
-	event.waitUntil(deleteOldCaches());
+	async function registerPeriodicSync() {
+		try {
+			// Register a periodic sync with a minimum interval of one day
+			await sw.registration.periodicSync.register('my-sync', {
+				minInterval: 24 * 60 * 60 * 1000 // One day
+			});
+			console.log('Periodic sync registered');
+		} catch (error) {
+			console.error(`Periodic sync could not be registered: ${error}`);
+		}
+	}
+
+	event.waitUntil(deleteOldCaches().then(registerPeriodicSync));
 });
 
-self.addEventListener('fetch', (event) => {
+sw.addEventListener('fetch', (event) => {
 	// ignore POST requests etc
 	if (event.request.method !== 'GET') return;
 
@@ -66,4 +81,25 @@ self.addEventListener('fetch', (event) => {
 	}
 
 	event.respondWith(respond());
+});
+
+sw.addEventListener('periodicsync', (event) => {
+	if (event.tag === 'my-sync') {
+		event.waitUntil(
+			(async () => {
+				const bgFetch = await self.registration.backgroundFetch.fetch(
+					'my-fetch',
+					[
+						'https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/30.5559368,-87.2839719'
+					],
+					{
+						title: 'Background Fetch',
+						icons: [{ sizes: '192x192', src: '/icon.png', type: 'image/png' }],
+						downloadTotal: 15000
+					}
+				);
+				console.log(`Background Fetch successful with ID ${bgFetch.id}`);
+			})()
+		);
+	}
 });

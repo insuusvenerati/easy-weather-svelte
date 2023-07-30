@@ -11,11 +11,20 @@ export const load = (async ({ url, fetch }) => {
 	}
 
 	const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);
+
+	if(!locationResponse.ok) {
+		return {};
+	}
+
 	const locationData: LocationData = await locationResponse.json();
 
 	const response = await fetch(
 		`${env.API_URL}/forecast/${env.API_KEY}/${locationData.places[0].latitude},${locationData.places[0].longitude}?exclude=minutely,currently`
 	);
+
+	if (!response.ok) {
+		return {};
+	}
 
 	const weatherData: WeatherResponse = await response.json();
 
@@ -24,3 +33,4 @@ export const load = (async ({ url, fetch }) => {
 		location: locationData.places[0]['place name']
 	};
 }) satisfies PageServerLoad;
+// lat: 40.7128, lng: -74.0060
