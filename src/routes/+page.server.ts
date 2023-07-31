@@ -5,6 +5,22 @@ import type { PageServerLoad } from './$types';
 
 export const load = (async ({ url, fetch }) => {
 	const zipcode = url.searchParams.get('zipcode');
+	const lat = url.searchParams.get('lat');
+	const lon = url.searchParams.get('lon');
+
+	if (lat && lon) {
+		const response = await fetch(
+			`${env.API_URL}/forecast/${env.API_KEY}/${lat},${lon}?exclude=minutely,currently`
+		);
+		if (!response.ok) {
+			return {};
+		}
+		const weatherData: WeatherResponse = await response.json();
+		return {
+			weather: weatherData,
+			location: 'Current Location'
+		};
+	}
 
 	if (!zipcode) {
 		return {};
@@ -12,25 +28,24 @@ export const load = (async ({ url, fetch }) => {
 
 	const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);
 
-	if(!locationResponse.ok) {
+	if (!locationResponse.ok) {
 		return {};
 	}
 
 	const locationData: LocationData = await locationResponse.json();
 
-	const response = await fetch(
-		`${env.API_URL}/forecast/${env.API_KEY}/${locationData.places[0].latitude},${locationData.places[0].longitude}?exclude=minutely,currently`
-	);
-
-	if (!response.ok) {
-		return {};
+	if (zipcode && locationData.places.length) {
+		const response = await fetch(
+			`${env.API_URL}/forecast/${env.API_KEY}/${locationData.places[0].latitude},${locationData.places[0].longitude}?exclude=minutely,currently`
+		);
+		if (!response.ok) {
+			return {};
+		}
+		const weatherData: WeatherResponse = await response.json();
+		return {
+			weather: weatherData,
+			location: locationData.places[0]['place name']
+		};
 	}
-
-	const weatherData: WeatherResponse = await response.json();
-
-	return {
-		weather: weatherData,
-		location: locationData.places[0]['place name']
-	};
 }) satisfies PageServerLoad;
 // lat: 40.7128, lng: -74.0060

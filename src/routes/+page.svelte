@@ -13,6 +13,7 @@
 	<title>Easy Weather ⛅ {data.location ? `- ${data.location}` : ''}</title>
 	<meta name="description" content="Weather, but easy." />
 </svelte:head>
+
 <Accordion>
 	{#if data.weather?.alerts}
 		<AccordionItem>
@@ -35,9 +36,12 @@
 						<svelte:fragment slot="lead">
 							<img src={getWeatherIconUrl(time.icon)} alt={time.summary} class="w-10 h-10" />
 						</svelte:fragment>
-						<svelte:fragment slot="summary"
-							>{new Date(time.time * 1000).toLocaleString()}</svelte:fragment
-						>
+						<svelte:fragment slot="summary">
+							<span class="font-bold">
+								{time.temperature.toFixed(0)}°F
+							</span>
+							{new Date(time.time * 1000).toLocaleString()}
+						</svelte:fragment>
 						<svelte:fragment slot="content">
 							<DetailedWeather detailedData={time} />
 						</svelte:fragment>
