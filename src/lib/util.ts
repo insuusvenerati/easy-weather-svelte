@@ -43,3 +43,7 @@ export const getPrecipIntensity = (intensity: number) => {
 		return 'Heavy precipitation';
 	}
 };
+
+export const isValidUSZip = (sZip: string) => {
+	return /^\d{5}(?:[-\s]\d{4})?$/.test(sZip);
+};

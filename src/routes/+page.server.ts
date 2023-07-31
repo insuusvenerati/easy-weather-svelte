@@ -2,6 +2,7 @@ import { env } from '$env/dynamic/private';
 import type { Root } from '$lib/types/geographies';
 import type { LocationData } from '$lib/types/location';
 import type { WeatherResponse } from '$lib/types/weather';
+import { isValidUSZip } from '$lib/util';
 import type { PageServerLoad } from './$types';
 
 export const load = (async ({ url, fetch }) => {
@@ -11,10 +12,12 @@ export const load = (async ({ url, fetch }) => {
 
 	if (lat && lon) {
 		const [weather, location] = await Promise.all<[Promise<WeatherResponse>, Promise<Root>]>([
-			fetch(`${env.API_URL}/forecast/${env.API_KEY}/${lat},${lon}?exclude=minutely,currently`).then(
-				(res) => res.json()
-			),
-			fetch(`${env.GEO_URL}&x=${lon}&y=${lat}`).then((res) => res.json())
+			fetch(`${env.API_URL}/forecast/${env.API_KEY}/${lat},${lon}?exclude=minutely,currently`)
+				.then((res) => res.json())
+				.catch((err) => err),
+			fetch(`${env.GEO_URL}&x=${lon}&y=${lat}`)
+				.then((res) => res.json())
+				.catch((err) => err)
 		]);
 
 		return {
@@ -24,7 +27,11 @@ export const load = (async ({ url, fetch }) => {
 	}
 
 	if (!zipcode) {
-		return {};
+		return;
+	}
+
+	if (!isValidUSZip(zipcode)) {
+		return { error: '⚠️ Enter a valid US zipcode' };
 	}
 
 	const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);

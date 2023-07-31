@@ -5,6 +5,7 @@
 	import type { PageData } from './$types';
 	import { getWeatherIconUrl } from '$lib/util';
 	import Alerts from '$lib/components/Alerts.svelte';
+	import { fade } from 'svelte/transition';
 
 	export let data: PageData;
 </script>
@@ -13,6 +14,14 @@
 	<title>Easy Weather {data.location ? `- ${data.location}` : ''}</title>
 	<meta name="description" content="Weather, but easy." />
 </svelte:head>
+
+{#if data.error}
+	<aside transition:fade|local={{ duration: 200 }} class="alert variant-ghost-error max-w-sm">
+		<div class="alert-message">
+			{data.error}
+		</div>
+	</aside>
+{/if}
 
 <Accordion>
 	{#if data.weather?.alerts}
