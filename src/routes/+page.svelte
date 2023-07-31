@@ -10,7 +10,7 @@
 </script>
 
 <svelte:head>
-	<title>Easy Weather ⛅ {data.location ? `- ${data.location}` : ''}</title>
+	<title>Easy Weather {data.location ? `- ${data.location}` : ''}</title>
 	<meta name="description" content="Weather, but easy." />
 </svelte:head>
 
