@@ -9,7 +9,6 @@ export const load = (async ({ url, fetch }) => {
 	const zipcode = url.searchParams.get('zipcode');
 	const lat = url.searchParams.get('lat');
 	const lon = url.searchParams.get('lon');
-	const broadcast = new BroadcastChannel('weather-data-channel');
 
 	if (lat && lon) {
 		const [weather, location] = await Promise.all<[Promise<WeatherResponse>, Promise<Root>]>([
@@ -34,8 +33,6 @@ export const load = (async ({ url, fetch }) => {
 	if (!isValidUSZip(zipcode)) {
 		return { error: '⚠️ Enter a valid US zipcode' };
 	}
-
-	broadcast.postMessage({ zipcode });
 
 	const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);
 	const locationData: LocationData = await locationResponse.json();

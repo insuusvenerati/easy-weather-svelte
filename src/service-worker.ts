@@ -16,11 +16,9 @@ const ASSETS = [
 	...files // everything in `static`
 ];
 
-const broadcast = new BroadcastChannel('weather-data-channel');
+const broadcast = new BroadcastChannel('location');
 broadcast.onmessage = (event) => {
-	if (event.data) {
-		console.log(event.data.zipcode);
-	}
+	console.log(event.data.coords);
 };
 
 sw.addEventListener('install', (event) => {
@@ -67,7 +65,7 @@ sw.addEventListener('fetch', (event) => {
 
 		// `build`/`files` can always be served from the cache
 		if (ASSETS.includes(url.pathname)) {
-			console.log('Serving from cache', event.request.url);
+			// console.log('Serving from cache', event.request.url);
 			return cache.match(url.pathname);
 		}
 
@@ -77,13 +75,13 @@ sw.addEventListener('fetch', (event) => {
 			const response = await fetch(event.request);
 
 			if (response.status === 200) {
-				console.log('Caching', event.request.url);
+				// console.log('Caching', event.request.url);
 				cache.put(event.request, response.clone());
 			}
 
 			return response;
 		} catch {
-			console.log('Serving from cache', event.request.url);
+			// console.log('Serving from cache', event.request.url);
 			return cache.match(event.request);
 		}
 	}
@@ -108,7 +106,7 @@ async function fetchAndCacheWeatherData() {
 
 sw.addEventListener('periodicsync', (event) => {
 	if (event.tag === 'sync-weather-data') {
-		event.waitUntil(fetchAndCacheWeatherData);
+		event.waitUntil(fetchAndCacheWeatherData());
 	}
 });
 
