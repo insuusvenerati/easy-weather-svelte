@@ -9,6 +9,7 @@ export const load = (async ({ url, fetch }) => {
 	const zipcode = url.searchParams.get('zipcode');
 	const lat = url.searchParams.get('lat');
 	const lon = url.searchParams.get('lon');
+	const broadcast = new BroadcastChannel('weather-data-channel');
 
 	if (lat && lon) {
 		const [weather, location] = await Promise.all<[Promise<WeatherResponse>, Promise<Root>]>([
@@ -34,25 +35,17 @@ export const load = (async ({ url, fetch }) => {
 		return { error: '⚠️ Enter a valid US zipcode' };
 	}
 
+	broadcast.postMessage({ zipcode });
+
 	const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);
-
-	if (!locationResponse.ok) {
-		return {};
-	}
-
 	const locationData: LocationData = await locationResponse.json();
 
-	if (locationData.places.length) {
-		const response = await fetch(
-			`${env.API_URL}/forecast/${env.API_KEY}/${locationData.places[0].latitude},${locationData.places[0].longitude}?exclude=minutely,currently`
-		);
-		if (!response.ok) {
-			return {};
-		}
-		const weatherData: WeatherResponse = await response.json();
-		return {
-			weather: weatherData,
-			location: locationData.places[0]['place name']
-		};
-	}
+	const response = await fetch(
+		`${env.API_URL}/forecast/${env.API_KEY}/${locationData.places[0].latitude},${locationData.places[0].longitude}?exclude=minutely,currently`
+	);
+	const weatherData: WeatherResponse = await response.json();
+	return {
+		weather: weatherData,
+		location: locationData.places[0]['place name']
+	};
 }) satisfies PageServerLoad;

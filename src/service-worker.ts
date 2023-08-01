@@ -4,6 +4,7 @@
 /// <reference lib="webworker" />
 
 import { build, files, version } from '$service-worker';
+import type { WeatherResponse } from './lib/types/weather';
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
@@ -14,6 +15,13 @@ const ASSETS = [
 	...build, // the app itsw
 	...files // everything in `static`
 ];
+
+const broadcast = new BroadcastChannel('weather-data-channel');
+broadcast.onmessage = (event) => {
+	if (event.data) {
+		console.log(event.data.zipcode);
+	}
+};
 
 sw.addEventListener('install', (event) => {
 	console.log('Installing service worker');
@@ -37,8 +45,8 @@ sw.addEventListener('activate', (event) => {
 	async function registerPeriodicSync() {
 		try {
 			// Register a periodic sync with a minimum interval of one day
-			await sw.registration.periodicSync.register('my-sync', {
-				minInterval: 24 * 60 * 60 * 1000 // One day
+			await sw.registration.periodicSync.register('sync-weather-data', {
+				minInterval: 60 * 60 * 1000 // One day
 			});
 			console.log('Periodic sync registered');
 		} catch (error) {
@@ -83,23 +91,45 @@ sw.addEventListener('fetch', (event) => {
 	event.respondWith(respond());
 });
 
+// In the service worker
+async function fetchAndCacheWeatherData() {
+	const response = await fetch('https://api.pirateweather.net/forecast/{location}');
+	const data: WeatherResponse = await response.json();
+	if (data.alerts && data.alerts.length > 0) {
+		sw.registration.showNotification('Weather Alert', {
+			body: data.alerts[0].description,
+			icon: '⛅',
+			tag: 'weather-alert'
+		});
+	}
+	const cache = await caches.open('weather-data');
+	cache.put('https://api.pirateweather.net/forecast/{location}', response.clone());
+}
+
 sw.addEventListener('periodicsync', (event) => {
-	if (event.tag === 'my-sync') {
-		event.waitUntil(
-			(async () => {
-				const bgFetch = await self.registration.backgroundFetch.fetch(
-					'my-fetch',
-					[
-						'https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/30.5559368,-87.2839719'
-					],
-					{
-						title: 'Background Fetch',
-						icons: [{ sizes: '192x192', src: '/icon.png', type: 'image/png' }],
-						downloadTotal: 15000
-					}
-				);
-				console.log(`Background Fetch successful with ID ${bgFetch.id}`);
-			})()
-		);
+	if (event.tag === 'sync-weather-data') {
+		event.waitUntil(fetchAndCacheWeatherData);
 	}
 });
+
+// In the service worker
+sw.addEventListener('notificationclick', (event) => {
+	event.notification.close();
+	event.waitUntil(sw.clients.openWindow('https://easy-weather-svelte.pages.dev/'));
+});
+
+// (async () => {
+// 	const bgFetch = await sw.registration.backgroundFetch.fetch(
+// 		'my-fetch',
+// 		[
+// 			'https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/30.5559368,-87.2839719'
+// 		],
+// 		{
+// 			title: 'Background Fetch',
+// 			icons: [{ sizes: '192x192', src: '/icon.png', type: 'image/png' }],
+// 			downloadTotal: 15000
+// 		}
+// 	);
+// 	console.log(`Background Fetch successful with ID ${bgFetch.id}`);
+// })()
+// In the service worker

@@ -6,6 +6,21 @@
 	import { getWeatherIconUrl } from '$lib/util';
 	import Alerts from '$lib/components/Alerts.svelte';
 	import { fade } from 'svelte/transition';
+	import { onMount } from 'svelte';
+
+	onMount(async () => {
+		if ('Notification' in window) {
+			const permission = await Notification.requestPermission();
+
+			if (permission === 'granted') {
+				console.log('Notification permission granted.');
+			} else {
+				console.log('Notification permission denied.');
+			}
+		} else {
+			console.log('Notifications not supported by this browser.');
+		}
+	});
 
 	export let data: PageData;
 </script>
