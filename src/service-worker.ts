@@ -92,7 +92,7 @@ sw.addEventListener('fetch', (event) => {
 // In the service worker
 async function fetchAndCacheWeatherData() {
 	const response = await fetch(
-		`https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/30.5559368,-87.2839719`
+		`https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/36.1961049,-95.9340291`
 	);
 	const data: WeatherResponse = await response.json();
 	if (data.alerts && data.alerts.length > 0) {
