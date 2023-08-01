@@ -14,10 +14,6 @@
 
 			if (permission === 'granted') {
 				console.log('Notification permission granted.');
-				new Notification('Easy Weather', {
-					body: 'Notification are working! Thanks!',
-					icon: '/icon.png'
-				});
 			} else {
 				console.log('Notification permission denied.');
 			}

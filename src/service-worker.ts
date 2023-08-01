@@ -44,7 +44,7 @@ sw.addEventListener('activate', (event) => {
 		try {
 			// Register a periodic sync with a minimum interval of one day
 			await sw.registration.periodicSync.register('sync-weather-data', {
-				minInterval: 60 * 60 * 1000 // One day
+				minInterval: 60 * 1000
 			});
 			console.log('Periodic sync registered');
 		} catch (error) {
