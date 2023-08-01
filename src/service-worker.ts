@@ -91,7 +91,9 @@ sw.addEventListener('fetch', (event) => {
 
 // In the service worker
 async function fetchAndCacheWeatherData() {
-	const response = await fetch('https://api.pirateweather.net/forecast/{location}');
+	const response = await fetch(
+		`https://api.pirateweather.net/forecast/${process.env.API_KEY}/30.5559368,-87.2839719`
+	);
 	const data: WeatherResponse = await response.json();
 	if (data.alerts && data.alerts.length > 0) {
 		sw.registration.showNotification('Weather Alert', {
@@ -101,7 +103,10 @@ async function fetchAndCacheWeatherData() {
 		});
 	}
 	const cache = await caches.open('weather-data');
-	cache.put('https://api.pirateweather.net/forecast/{location}', response.clone());
+	cache.put(
+		`https://api.pirateweather.net/forecast/${process.env.API_KEY}/30.5559368,-87.2839719`,
+		response.clone()
+	);
 }
 
 sw.addEventListener('periodicsync', (event) => {
