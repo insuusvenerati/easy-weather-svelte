@@ -91,7 +91,7 @@ async function fetchAndCacheWeatherData() {
 	// const data: WeatherResponse = await response.json();
 
 	// get alerts from index db and show notification if there is a new alert
-	const db = indexedDB.open('alerts', 1);
+	const db = indexedDB.open('alerts', 3);
 	db.onsuccess = function () {
 		const db = this.result;
 		const transaction = db.transaction(['alerts'], 'readwrite');
@@ -123,7 +123,24 @@ sw.addEventListener('periodicsync', (event) => {
 // In the service worker
 sw.addEventListener('notificationclick', (event) => {
 	event.notification.close();
-	event.waitUntil(sw.clients.openWindow('https://easy-weather-svelte.pages.dev/'));
+	// Get the zipcode from the latest alert and open the window to that zipcode
+	const db = indexedDB.open('alerts', 3);
+	db.onsuccess = function () {
+		const db = this.result;
+		const transaction = db.transaction(['alerts'], 'readwrite');
+		const objectStore = transaction.objectStore('alerts');
+		const request = objectStore.getAll();
+
+		request.onsuccess = function () {
+			const alerts = this.result;
+			const newAlerts = alerts.filter((alert) => alert.time > Date.now());
+			if (newAlerts.length > 0) {
+				const zipcode = newAlerts[0].zipcode;
+				const url = `https://${sw.origin}/?zipcode=${zipcode}`;
+				sw.clients.openWindow(url);
+			}
+		};
+	};
 });
 
 // (async () => {

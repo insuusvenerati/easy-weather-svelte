@@ -6,8 +6,8 @@ export class DexieAlerts extends Dexie {
 
 	constructor() {
 		super('alerts');
-		this.version(1).stores({
-			alerts: '++id, title, description, expires, severity, uri, regions, time'
+		this.version(3).stores({
+			alerts: '++id, title, description, expires, severity, uri, regions, time, lat, lon, zipcode'
 		});
 	}
 }

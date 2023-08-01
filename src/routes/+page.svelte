@@ -24,13 +24,9 @@
 		if (data.weather?.alerts.length) {
 			const alerts = data.weather.alerts.map((alert) => {
 				return {
-					title: alert.title,
-					description: alert.description,
-					expires: alert.expires,
-					severity: alert.severity,
-					uri: alert.uri,
-					regions: alert.regions,
-					time: alert.time
+					lat: data.weather?.latitude,
+					lon: data.weather?.longitude,
+					...alert
 				};
 			});
 			alerts.forEach((alert) => {
