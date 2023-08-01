@@ -4,7 +4,6 @@
 /// <reference lib="webworker" />
 
 import { build, files, version } from '$service-worker';
-import type { WeatherResponse } from './lib/types/weather';
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
@@ -15,11 +14,6 @@ const ASSETS = [
 	...build, // the app itsw
 	...files // everything in `static`
 ];
-
-const broadcast = new BroadcastChannel('location');
-broadcast.onmessage = (event) => {
-	console.log(event.data.coords);
-};
 
 sw.addEventListener('install', (event) => {
 	console.log('Installing service worker');
@@ -91,22 +85,33 @@ sw.addEventListener('fetch', (event) => {
 
 // In the service worker
 async function fetchAndCacheWeatherData() {
-	const response = await fetch(
-		`https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/36.1961049,-95.9340291`
-	);
-	const data: WeatherResponse = await response.json();
-	if (data.alerts && data.alerts.length > 0) {
-		sw.registration.showNotification('Weather Alert', {
-			body: data.alerts[0].description,
-			icon: '⛅',
-			tag: 'weather-alert'
-		});
-	}
-	// const cache = await caches.open('weather-data');
-	// cache.put(
-	// 	`https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/30.5559368,-87.2839719`,
-	// 	response.clone()
+	// const response = await fetch(
+	// 	`https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/36.1961049,-95.9340291`
 	// );
+	// const data: WeatherResponse = await response.json();
+
+	// get alerts from index db and show notification if there is a new alert
+	const db = indexedDB.open('alerts', 1);
+	db.onsuccess = function () {
+		const db = this.result;
+		const transaction = db.transaction(['alerts'], 'readwrite');
+		const objectStore = transaction.objectStore('alerts');
+		const request = objectStore.getAll();
+
+		request.onsuccess = function () {
+			const alerts = this.result;
+			const newAlerts = alerts.filter((alert) => alert.time > Date.now());
+			if (newAlerts.length > 0) {
+				const title = 'Weather Alert';
+				const options = {
+					body: newAlerts[0].description,
+					icon: '/icon.png',
+					badge: '/badge.png'
+				};
+				sw.registration.showNotification(title, options);
+			}
+		};
+	};
 }
 
 sw.addEventListener('periodicsync', (event) => {

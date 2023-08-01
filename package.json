@@ -43,5 +43,8 @@
 	"volta": {
 		"node": "18.17.0",
 		"pnpm": "8.6.11"
+	},
+	"dependencies": {
+		"dexie": "4.0.1-alpha.25"
 	}
 }

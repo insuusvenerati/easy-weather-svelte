@@ -7,6 +7,7 @@
 	import Alerts from '$lib/components/Alerts.svelte';
 	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
+	import { db } from '$lib/db';
 
 	onMount(async () => {
 		if ('Notification' in window) {
@@ -19,6 +20,32 @@
 			}
 		} else {
 			console.log('Notifications not supported by this browser.');
+		}
+		if (data.weather?.alerts.length) {
+			const alerts = data.weather.alerts.map((alert) => {
+				return {
+					title: alert.title,
+					description: alert.description,
+					expires: alert.expires,
+					severity: alert.severity,
+					uri: alert.uri,
+					regions: alert.regions,
+					time: alert.time
+				};
+			});
+			alerts.forEach((alert) => {
+				db.alerts
+					.where('time')
+					.equals(alert.time)
+					.count()
+					.then((count) => {
+						if (count) {
+							db.alerts.update(alert.time, alert);
+						} else {
+							db.alerts.add(alert);
+						}
+					});
+			});
 		}
 	});
 
