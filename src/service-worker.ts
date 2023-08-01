@@ -102,11 +102,11 @@ async function fetchAndCacheWeatherData() {
 			tag: 'weather-alert'
 		});
 	}
-	const cache = await caches.open('weather-data');
-	cache.put(
-		`https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/30.5559368,-87.2839719`,
-		response.clone()
-	);
+	// const cache = await caches.open('weather-data');
+	// cache.put(
+	// 	`https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/30.5559368,-87.2839719`,
+	// 	response.clone()
+	// );
 }
 
 sw.addEventListener('periodicsync', (event) => {
