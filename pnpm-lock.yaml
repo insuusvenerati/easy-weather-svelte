@@ -17,8 +17,8 @@ devDependencies:
     specifier: ^1.36.2
     version: 1.36.2
   '@skeletonlabs/skeleton':
-    specifier: ^1.10.0
-    version: 1.10.0(svelte@4.1.2)
+    specifier: ^1.11.0
+    version: 1.11.0(svelte@4.1.2)
   '@sveltejs/adapter-auto':
     specifier: ^2.1.0
     version: 2.1.0(@sveltejs/kit@1.22.4)
@@ -460,8 +460,8 @@ packages:
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
     dev: true
 
-  /@skeletonlabs/skeleton@1.10.0(svelte@4.1.2):
-    resolution: {integrity: sha512-6Cy1dzF6b2tMGxjFe60WOulN53tfvWMH+SDYoPMzNsRoa20vjlBMjLInWPJGn4dMuSJMiDrR9apniv16m0c9Rg==}
+  /@skeletonlabs/skeleton@1.11.0(svelte@4.1.2):
+    resolution: {integrity: sha512-VdLdYT0Gm4zsVPjLM2cXjyBWJbo8Cxswf8RBsD5cjAP8E098D237WDgDQmV1JC6WYUY2OiEOLN4PV6S3LoF2dg==}
     peerDependencies:
       svelte: ^3.56.0 || ^4.0.0
     dependencies:
