@@ -1,10 +1,9 @@
 <script lang="ts">
+	import Alerts from '$lib/components/Alerts.svelte';
 	import Card from '$lib/components/Card.svelte';
 	import DetailedWeather from '$lib/components/DetailedWeather.svelte';
-	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-	import type { PageData } from './$types';
 	import { getWeatherIconUrl } from '$lib/util';
-	import Alerts from '$lib/components/Alerts.svelte';
+	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
 	import type { PageData } from './$types';
 
@@ -24,23 +23,26 @@
 	</aside>
 {/if}
 
-<Accordion>
-	{#if data.weather?.alerts}
-		<AccordionItem>
-			<svelte:fragment slot="lead">⚠️</svelte:fragment>
-			<svelte:fragment slot="summary">
-				{data.weather.alerts.length} active alert{data.weather.alerts.length > 1 ? 's' : ''}
-			</svelte:fragment>
-			<svelte:fragment slot="content">
-				<Alerts alerts={data.weather.alerts} />
-			</svelte:fragment>
-		</AccordionItem>
-	{/if}
-</Accordion>
-<div class="flex flex-col gap-4">
+<section>
 	<Accordion>
+		{#if data.weather?.alerts}
+			<AccordionItem>
+				<svelte:fragment slot="lead">⚠️</svelte:fragment>
+				<svelte:fragment slot="summary">
+					{data.weather.alerts.length} active alert{data.weather.alerts.length > 1 ? 's' : ''}
+				</svelte:fragment>
+				<svelte:fragment slot="content">
+					<Alerts alerts={data.weather.alerts} />
+				</svelte:fragment>
+			</AccordionItem>
+		{/if}
+	</Accordion>
+</section>
+
+<section class="flex gap-4 overflow-x-auto overflow-y-hidden">
+	<Accordion regionControl="w-[350px]">
 		{#if data.weather?.hourly.data}
-			<div class="grid grid-cols-1 lg:grid-cols-7 gap-4">
+			<div class="flex gap-4">
 				{#each data.weather.hourly.data.slice(0, 7) as time}
 					<AccordionItem>
 						<svelte:fragment slot="lead">
@@ -60,7 +62,9 @@
 			</div>
 		{/if}
 	</Accordion>
+</section>
 
+<section>
 	{#if data.weather?.daily.data && data.location}
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
 			{#each data.weather.daily.data as day}
@@ -68,4 +72,4 @@
 			{/each}
 		</div>
 	{/if}
-</div>
+</section>
