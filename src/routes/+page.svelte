@@ -6,44 +6,7 @@
 	import { getWeatherIconUrl } from '$lib/util';
 	import Alerts from '$lib/components/Alerts.svelte';
 	import { fade } from 'svelte/transition';
-	import { onMount } from 'svelte';
-	import { db } from '$lib/db';
-
-	onMount(async () => {
-		if ('Notification' in window) {
-			const permission = await Notification.requestPermission();
-
-			if (permission === 'granted') {
-				console.log('Notification permission granted.');
-			} else {
-				console.log('Notification permission denied.');
-			}
-		} else {
-			console.log('Notifications not supported by this browser.');
-		}
-		if (data.weather?.alerts.length) {
-			const alerts = data.weather.alerts.map((alert) => {
-				return {
-					lat: data.weather?.latitude,
-					lon: data.weather?.longitude,
-					...alert
-				};
-			});
-			alerts.forEach((alert) => {
-				db.alerts
-					.where('time')
-					.equals(alert.time)
-					.count()
-					.then((count) => {
-						if (count) {
-							db.alerts.update(alert.time, alert);
-						} else {
-							db.alerts.add(alert);
-						}
-					});
-			});
-		}
-	});
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 </script>

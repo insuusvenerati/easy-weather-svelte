@@ -34,19 +34,19 @@ sw.addEventListener('activate', (event) => {
 		}
 	}
 
-	async function registerPeriodicSync() {
-		try {
-			// Register a periodic sync with a minimum interval of one day
-			await sw.registration.periodicSync.register('sync-weather-data', {
-				minInterval: 60 * 1000
-			});
-			console.log('Periodic sync registered');
-		} catch (error) {
-			console.error(`Periodic sync could not be registered: ${error}`);
-		}
-	}
+	// async function registerPeriodicSync() {
+	// 	try {
+	// 		// Register a periodic sync with a minimum interval of one day
+	// 		await sw.registration.periodicSync.register('sync-weather-data', {
+	// 			minInterval: 60 * 1000
+	// 		});
+	// 		console.log('Periodic sync registered');
+	// 	} catch (error) {
+	// 		console.error(`Periodic sync could not be registered: ${error}`);
+	// 	}
+	// }
 
-	event.waitUntil(deleteOldCaches().then(registerPeriodicSync));
+	event.waitUntil(deleteOldCaches());
 });
 
 sw.addEventListener('fetch', (event) => {
@@ -83,65 +83,64 @@ sw.addEventListener('fetch', (event) => {
 	event.respondWith(respond());
 });
 
+// async function fetchAndCacheWeatherData() {
+// 	// const response = await fetch(
+// 	// 	`https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/36.1961049,-95.9340291`
+// 	// );
+// 	// const data: WeatherResponse = await response.json();
+
+// 	// get alerts from index db and show notification if there is a new alert
+// 	const db = indexedDB.open('alerts', 3);
+// 	db.onsuccess = function () {
+// 		const db = this.result;
+// 		const transaction = db.transaction(['alerts'], 'readwrite');
+// 		const objectStore = transaction.objectStore('alerts');
+// 		const request = objectStore.getAll();
+
+// 		request.onsuccess = function () {
+// 			const alerts = this.result;
+// 			const newAlerts = alerts.filter((alert) => alert.time > Date.now());
+// 			if (newAlerts.length > 0) {
+// 				const title = 'Weather Alert';
+// 				const options = {
+// 					body: newAlerts[0].description,
+// 					icon: '/icon.png',
+// 					badge: '/badge.png'
+// 				};
+// 				sw.registration.showNotification(title, options);
+// 			}
+// 		};
+// 	};
+// }
+
+// sw.addEventListener('periodicsync', (event) => {
+// 	if (event.tag === 'sync-weather-data') {
+// 		event.waitUntil(fetchAndCacheWeatherData());
+// 	}
+// });
+
 // In the service worker
-async function fetchAndCacheWeatherData() {
-	// const response = await fetch(
-	// 	`https://api.pirateweather.net/forecast/1btBnNtfn05w3b3p4LU8d1wJfnJxuKnj60oHhkIO/36.1961049,-95.9340291`
-	// );
-	// const data: WeatherResponse = await response.json();
+// sw.addEventListener('notificationclick', (event) => {
+// 	event.notification.close();
+// 	// Get the zipcode from the latest alert and open the window to that zipcode
+// 	const db = indexedDB.open('alerts', 3);
+// 	db.onsuccess = function () {
+// 		const db = this.result;
+// 		const transaction = db.transaction(['alerts'], 'readwrite');
+// 		const objectStore = transaction.objectStore('alerts');
+// 		const request = objectStore.getAll();
 
-	// get alerts from index db and show notification if there is a new alert
-	const db = indexedDB.open('alerts', 3);
-	db.onsuccess = function () {
-		const db = this.result;
-		const transaction = db.transaction(['alerts'], 'readwrite');
-		const objectStore = transaction.objectStore('alerts');
-		const request = objectStore.getAll();
-
-		request.onsuccess = function () {
-			const alerts = this.result;
-			const newAlerts = alerts.filter((alert) => alert.time > Date.now());
-			if (newAlerts.length > 0) {
-				const title = 'Weather Alert';
-				const options = {
-					body: newAlerts[0].description,
-					icon: '/icon.png',
-					badge: '/badge.png'
-				};
-				sw.registration.showNotification(title, options);
-			}
-		};
-	};
-}
-
-sw.addEventListener('periodicsync', (event) => {
-	if (event.tag === 'sync-weather-data') {
-		event.waitUntil(fetchAndCacheWeatherData());
-	}
-});
-
-// In the service worker
-sw.addEventListener('notificationclick', (event) => {
-	event.notification.close();
-	// Get the zipcode from the latest alert and open the window to that zipcode
-	const db = indexedDB.open('alerts', 3);
-	db.onsuccess = function () {
-		const db = this.result;
-		const transaction = db.transaction(['alerts'], 'readwrite');
-		const objectStore = transaction.objectStore('alerts');
-		const request = objectStore.getAll();
-
-		request.onsuccess = function () {
-			const alerts = this.result;
-			const newAlerts = alerts.filter((alert) => alert.time > Date.now());
-			if (newAlerts.length > 0) {
-				const zipcode = newAlerts[0].zipcode;
-				const url = `https://${sw.origin}/?zipcode=${zipcode}`;
-				sw.clients.openWindow(url);
-			}
-		};
-	};
-});
+// 		request.onsuccess = function () {
+// 			const alerts = this.result;
+// 			const newAlerts = alerts.filter((alert) => alert.time > Date.now());
+// 			if (newAlerts.length > 0) {
+// 				const zipcode = newAlerts[0].zipcode;
+// 				const url = `https://${sw.origin}/?zipcode=${zipcode}`;
+// 				sw.clients.openWindow(url);
+// 			}
+// 		};
+// 	};
+// });
 
 // (async () => {
 // 	const bgFetch = await sw.registration.backgroundFetch.fetch(
