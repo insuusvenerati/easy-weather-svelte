@@ -1,29 +1,35 @@
 import { env } from '$env/dynamic/private';
+import { trpc } from '$lib/trpc/client';
+import { createContext } from '$lib/trpc/context';
+import { router } from '$lib/trpc/router';
 import type { Root } from '$lib/types/geographies';
 import type { LocationData } from '$lib/types/location';
 import type { WeatherResponse } from '$lib/types/weather';
 import { isValidUSZip } from '$lib/util';
 import type { PageServerLoad } from './$types';
 
-export const load = (async ({ url, fetch }) => {
+export const load = (async (event) => {
+	const { url, fetch } = event;
 	const zipcode = url.searchParams.get('zipcode');
 	const lat = url.searchParams.get('lat');
 	const lon = url.searchParams.get('lon');
 
 	if (lat && lon) {
-		const [weather, location] = await Promise.all<[Promise<WeatherResponse>, Promise<Root>]>([
-			fetch(`${env.API_URL}/forecast/${env.API_KEY}/${lat},${lon}?exclude=minutely,currently`)
-				.then((res) => res.json())
-				.catch((err) => err),
-			fetch(`${env.GEO_URL}&x=${lon}&y=${lat}`)
-				.then((res) => res.json())
-				.catch((err) => err)
-		]);
+		return await router.createCaller(await createContext(event)).weather({ lat, lon });
 
-		return {
-			weather: weather,
-			location: location.result.geographies['County Subdivisions'][0].BASENAME
-		};
+		// const [weather, location] = await Promise.all<[Promise<WeatherResponse>, Promise<Root>]>([
+		// 	fetch(`${env.API_URL}/forecast/${env.API_KEY}/${lat},${lon}?exclude=minutely,currently`)
+		// 		.then((res) => res.json())
+		// 		.catch((err) => err),
+		// 	fetch(`${env.GEO_URL}&x=${lon}&y=${lat}`)
+		// 		.then((res) => res.json())
+		// 		.catch((err) => err)
+		// ]);
+
+		// return {
+		// 	weather: weather,
+		// 	location: location.result.geographies['County Subdivisions'][0].BASENAME
+		// };
 	}
 
 	if (!zipcode) {
