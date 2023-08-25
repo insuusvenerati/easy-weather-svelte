@@ -1,54 +1,20 @@
-import { env } from '$env/dynamic/private';
-import { trpc } from '$lib/trpc/client';
 import { createContext } from '$lib/trpc/context';
 import { router } from '$lib/trpc/router';
-import type { Root } from '$lib/types/geographies';
-import type { LocationData } from '$lib/types/location';
-import type { WeatherResponse } from '$lib/types/weather';
-import { isValidUSZip } from '$lib/util';
 import type { PageServerLoad } from './$types';
 
 export const load = (async (event) => {
-	const { url, fetch } = event;
+	const { url } = event;
 	const zipcode = url.searchParams.get('zipcode');
 	const lat = url.searchParams.get('lat');
 	const lon = url.searchParams.get('lon');
 
 	if (lat && lon) {
 		return await router.createCaller(await createContext(event)).weather({ lat, lon });
-
-		// const [weather, location] = await Promise.all<[Promise<WeatherResponse>, Promise<Root>]>([
-		// 	fetch(`${env.API_URL}/forecast/${env.API_KEY}/${lat},${lon}?exclude=minutely,currently`)
-		// 		.then((res) => res.json())
-		// 		.catch((err) => err),
-		// 	fetch(`${env.GEO_URL}&x=${lon}&y=${lat}`)
-		// 		.then((res) => res.json())
-		// 		.catch((err) => err)
-		// ]);
-
-		// return {
-		// 	weather: weather,
-		// 	location: location.result.geographies['County Subdivisions'][0].BASENAME
-		// };
 	}
 
 	if (!zipcode) {
 		return;
 	}
 
-	if (!isValidUSZip(zipcode)) {
-		return { error: '⚠️ Enter a valid US zipcode' };
-	}
-
-	const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);
-	const locationData: LocationData = await locationResponse.json();
-
-	const response = await fetch(
-		`${env.API_URL}/forecast/${env.API_KEY}/${locationData.places[0].latitude},${locationData.places[0].longitude}?exclude=minutely,currently`
-	);
-	const weatherData: WeatherResponse = await response.json();
-	return {
-		weather: weatherData,
-		location: locationData.places[0]['place name']
-	};
+	return await router.createCaller(await createContext(event)).weather({ zipcode });
 }) satisfies PageServerLoad;

@@ -2,31 +2,56 @@
 import { env } from '$env/dynamic/private';
 import type { Root } from '$lib/types/geographies';
 import type { WeatherResponse } from '$lib/types/weather';
-import delay from 'delay';
-import { t } from './trpc';
 import { z } from 'zod';
+import { t } from './trpc';
+
+const latLonSchema = z.object({
+	lat: z.string(),
+	lon: z.string()
+});
+
+const zipcodeSchema = z.object({
+	zipcode: z.string()
+});
+
+const locationSchema = z.union([latLonSchema, zipcodeSchema]);
 
 export const router = t.router({
-	greeting: t.procedure.query(async () => {
-		await delay(500); // 👈 simulate an expensive operation
-		return `Hello tRPC v10 @ ${new Date().toLocaleTimeString()}`;
-	}),
-	weather: t.procedure.input(z.object({ lat: z.string(), lon: z.string() })).query(async (opts) => {
+	weather: t.procedure.input(locationSchema).query(async (opts) => {
 		const { input } = opts;
-		const [weather, location] = await Promise.all<[Promise<WeatherResponse>, Promise<Root>]>([
-			fetch(
-				`${env.API_URL}/forecast/${env.API_KEY}/${input.lat},${input.lon}?exclude=minutely,currently`
-			)
-				.then((res) => res.json())
-				.catch((err) => err),
-			fetch(`${env.GEO_URL}&x=${input.lon}&y=${input.lat}`)
-				.then((res) => res.json())
-				.catch((err) => err)
-		]);
+
+		// input can be either lat/lon or zipcode, handle accordingly
+		const isLatLon = 'lat' in input && 'lon' in input;
+		const isZipcode = 'zipcode' in input;
+
+		let weather, location;
+		if (isLatLon) {
+			const url = `${env.API_URL}/forecast/${env.API_KEY}/${input.lat},${input.lon}?exclude=minutely,currently`;
+			const geoUrl = `${env.GEO_URL}&x=${input.lon}&y=${input.lat}`;
+
+			[weather, location] = await Promise.all([
+				fetch(url).then((res) => res.json()),
+				fetch(geoUrl).then((res) => res.json())
+			]);
+
+			location = location.result.geographies['County Subdivisions'][0].BASENAME;
+		} else if (isZipcode) {
+			const locationResponse = await fetch(
+				`https://api.zippopotam.us/us/${input.zipcode}?units=us`
+			);
+			const locationData = await locationResponse.json();
+
+			const response = await fetch(
+				`${env.API_URL}/forecast/${env.API_KEY}/${locationData.places[0].latitude},${locationData.places[0].longitude}?exclude=minutely,currently`
+			);
+			weather = await response.json();
+
+			location = locationData.places[0]['place name'];
+		}
 
 		return {
 			weather: weather,
-			location: location.result.geographies['County Subdivisions'][0].BASENAME
+			location: location
 		};
 	})
 });
