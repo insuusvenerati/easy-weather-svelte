@@ -4,7 +4,6 @@
 	import DetailedWeather from '$lib/components/DetailedWeather.svelte';
 	import { getWeatherIconUrl } from '$lib/util';
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-	import { fade } from 'svelte/transition';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -16,14 +15,6 @@
 </svelte:head>
 
 <div class="flex flex-col gap-4">
-	{#if data.error}
-		<aside transition:fade|local={{ duration: 200 }} class="alert variant-ghost-error max-w-sm">
-			<div class="alert-message">
-				{data.error}
-			</div>
-		</aside>
-	{/if}
-
 	<section>
 		<Accordion>
 			{#if data.weather?.alerts}
@@ -41,7 +32,7 @@
 	</section>
 
 	<section class="flex gap-4 overflow-x-auto overflow-y-hidden">
-		<Accordion regionControl="w-[350px]">
+		<Accordion regionControl="w-[350px]" width="w-[350px]">
 			{#if data.weather?.hourly.data}
 				<div class="flex gap-4">
 					{#each data.weather.hourly.data.slice(0, 7) as time}
