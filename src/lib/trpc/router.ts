@@ -1,6 +1,5 @@
 // lib/trpc/router.ts
 import { env } from '$env/dynamic/private';
-import type { Root } from '$lib/types/geographies';
 import type { WeatherResponse } from '$lib/types/weather';
 import { z } from 'zod';
 import { t } from './trpc';
@@ -17,9 +16,7 @@ const zipcodeSchema = z.object({
 const locationSchema = z.union([latLonSchema, zipcodeSchema]);
 
 export const router = t.router({
-	weather: t.procedure.input(locationSchema).query(async (opts) => {
-		const { input } = opts;
-
+	weather: t.procedure.input(locationSchema).query(async ({ input }) => {
 		// input can be either lat/lon or zipcode, handle accordingly
 		const isLatLon = 'lat' in input && 'lon' in input;
 		const isZipcode = 'zipcode' in input;
@@ -50,8 +47,8 @@ export const router = t.router({
 		}
 
 		return {
-			weather: weather,
-			location: location
+			weather: weather as WeatherResponse,
+			location: location as string
 		};
 	})
 });
