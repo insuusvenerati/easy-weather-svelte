@@ -1,38 +1,35 @@
-# create-svelte
+# Easy Weather
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+#### By Sean Norwood
 
-## Creating a project
+#### Weather, but easy!
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Technologies Used
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+* Sveltekit
+* TailwindCSS
+* Typescript
+* TRPC
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## Description
 
-## Developing
+_Check your local weather forecast using your US Zipcode or Geolocation. See weather alerts and other detailed weather information._
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Setup/Installation Requirements
 
-```bash
-npm run dev
+* _Clone this repo_
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+* _Run `pnpm install` inside the cloned folder_
 
-## Building
+* _Copy the file `.env.example` to `.env.local` and fill in your API key from [Pirate Weather](https://api.pirateweather.net)_
 
-To create a production version of your app:
+* _Run `pnpm dev` in your terminal and visit the URL displayed_
 
-```bash
-npm run build
-```
+## Known Bugs
 
-You can preview the production build with `npm run preview`.
+No known issues at this time.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## License
+MIT
+
+Copyright (c) _2023_ _Sean Norwood_
