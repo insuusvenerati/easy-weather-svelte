@@ -1,11 +1,9 @@
 <script lang="ts">
 	import Search from '$lib/components/Search.svelte';
 	import { AppShell } from '@skeletonlabs/skeleton';
-	import '@skeletonlabs/skeleton/styles/skeleton.css';
-	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
 	import Geolocation from 'svelte-geolocation';
 	import type { GeolocationCoords } from 'svelte-geolocation/types/Geolocation.svelte';
-	import '../app.postcss';
+	import '../app.css';
 
 	let coords: GeolocationCoords;
 	let success: boolean;
