@@ -5,6 +5,8 @@
 	import { getWeatherIconUrl } from '$lib/util';
 	import { Accordion, AccordionItem, ProgressRadial } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
+	import WeatherRadar from '$lib/components/WeatherRadar.svelte';
+	import HurricaneRadar from '$lib/components/HurricaneRadar.svelte';
 
 	export let data: PageData;
 </script>
@@ -15,6 +17,10 @@
 </svelte:head>
 
 <div class="flex flex-col gap-4">
+	<div class="flex flex-col md:flex-row gap-4 h-screen">
+		<WeatherRadar coords={data.coords} />
+		<HurricaneRadar coords={data.coords} />
+	</div>
 	{#await data.streamed?.weather}
 		<ProgressRadial
 			width="w-12"

@@ -18,7 +18,7 @@
 <AppShell slotPageContent="p-4" slotPageHeader="p-4">
 	<svelte:fragment slot="header">
 		<div class="flex justify-between items-center">
-			<h1 class="text-6xl font-bold p-4">
+			<h1 class="text-4xl font-bold p-4">
 				<a href="/">Easy Weather ⛅</a>
 			</h1>
 

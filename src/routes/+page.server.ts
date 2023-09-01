@@ -11,6 +11,7 @@ export const load = ((event) => {
 
 	if (lat && lon) {
 		return {
+			coords: { lat, lon },
 			streamed: {
 				weather: router.createCaller(createContext(event)).weather({ lat, lon })
 			}
