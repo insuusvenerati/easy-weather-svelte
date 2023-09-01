@@ -12,7 +12,25 @@ const config = {
 	theme: {
 		extend: {}
 	},
-	plugins: [forms, skeleton({ themes: { preset: ['skeleton', 'wintry'] } })]
+	plugins: [
+		forms,
+		skeleton({
+			themes: {
+				preset: [
+					'skeleton',
+					'wintry',
+					'modern',
+					'crimson',
+					'gold-nouveau',
+					'hamlindigo',
+					'rocket',
+					'sahara',
+					'vintage',
+					'seafoam'
+				]
+			}
+		})
+	]
 } satisfies Config;
 
 export default config;

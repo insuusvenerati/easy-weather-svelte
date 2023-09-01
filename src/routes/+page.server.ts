@@ -1,5 +1,6 @@
 import { createContext } from '$lib/trpc/context';
 import { router } from '$lib/trpc/router';
+import type { Actions } from './$types';
 import type { PageServerLoad } from './$types';
 
 export const load = ((event) => {
@@ -25,3 +26,14 @@ export const load = ((event) => {
 		streamed: { weather: router.createCaller(createContext(event)).weather({ zipcode }) }
 	};
 }) satisfies PageServerLoad;
+
+export const actions: Actions = {
+	// This action is called when the user clicks the theme button
+	setTheme: async ({ cookies, request }) => {
+		const formData = await request.formData();
+		const theme = formData.get('theme')?.toString() ?? 'skeleton';
+		// Sets the selected theme to the cookie
+		cookies.set('theme', theme, { path: '/' });
+		return { theme };
+	}
+};

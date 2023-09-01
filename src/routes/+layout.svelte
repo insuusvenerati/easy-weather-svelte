@@ -1,9 +1,13 @@
 <script lang="ts">
 	import Search from '$lib/components/Search.svelte';
-	import { AppShell } from '@skeletonlabs/skeleton';
+	import ThemeSwitch from '$lib/components/ThemeSwitch.svelte';
+	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+	import { AppShell, storePopup } from '@skeletonlabs/skeleton';
 	import Geolocation from 'svelte-geolocation';
 	import type { GeolocationCoords } from 'svelte-geolocation/types/Geolocation.svelte';
 	import '../app.css';
+
+	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	let coords: GeolocationCoords;
 	let success: boolean;
@@ -12,11 +16,17 @@
 
 <Geolocation getPosition bind:notSupported bind:success bind:coords />
 <AppShell slotPageContent="p-4" slotPageHeader="p-4">
-	<svelte:fragment slot="pageHeader">
-		<div class="flex gap-4 flex-col">
-			<h1 class="text-6xl font-bold">
+	<svelte:fragment slot="header">
+		<div class="flex justify-between items-center">
+			<h1 class="text-6xl font-bold p-4">
 				<a href="/">Easy Weather ⛅</a>
 			</h1>
+
+			<ThemeSwitch />
+		</div>
+	</svelte:fragment>
+	<svelte:fragment slot="pageHeader">
+		<div class="flex gap-4 flex-col">
 			<Search />
 			{#if success && !notSupported}
 				<a
