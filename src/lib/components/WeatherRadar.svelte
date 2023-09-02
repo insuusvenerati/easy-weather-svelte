@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let coords: { lat: string; lon: string } | undefined;
+	export let coords: { lat: number; lon: number } | undefined;
 </script>
 
 {#if coords}

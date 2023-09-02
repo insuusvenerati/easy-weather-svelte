@@ -8,6 +8,6 @@ body {
 	@apply h-full overflow-hidden;
 }
 
-button.accordion-control {
-	@apply w-[350px];
+div.accordion-item {
+	@apply w-full;
 }

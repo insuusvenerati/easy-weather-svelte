@@ -17,10 +17,33 @@
 </svelte:head>
 
 <div class="flex flex-col gap-4">
-	<div class="flex flex-col md:flex-row gap-4 h-screen">
-		<WeatherRadar coords={data.coords} />
-		<HurricaneRadar coords={data.coords} />
-	</div>
+	{#await data.streamed?.coords}
+		<ProgressRadial
+			width="w-12"
+			stroke={65}
+			meter="stroke-primary-500"
+			track="stroke-primary-500/30"
+		/>
+	{:then coords}
+		{#if coords}
+			<Accordion regionPanel="h-screen">
+				<div class="flex flex-col md:flex-row gap-4">
+					<AccordionItem>
+						<svelte:fragment slot="summary">Weather Radar</svelte:fragment>
+						<svelte:fragment slot="content">
+							<WeatherRadar {coords} />
+						</svelte:fragment>
+					</AccordionItem>
+					<AccordionItem>
+						<svelte:fragment slot="summary">Hurricane Radar</svelte:fragment>
+						<svelte:fragment slot="content">
+							<HurricaneRadar {coords} />
+						</svelte:fragment>
+					</AccordionItem>
+				</div>
+			</Accordion>
+		{/if}
+	{/await}
 	{#await data.streamed?.weather}
 		<ProgressRadial
 			width="w-12"
@@ -48,7 +71,7 @@
 		</section>
 
 		<section class="flex gap-4 overflow-x-auto overflow-y-hidden">
-			<Accordion regionControl="w-[350px]" width="w-[350px]">
+			<Accordion>
 				{#if weather?.weather.hourly.data}
 					<div class="flex gap-4">
 						{#each weather?.weather.hourly.data.slice(0, 7) as time}
