@@ -21,7 +21,7 @@ export const router = t.router({
 		const isLatLon = 'lat' in input && 'lon' in input;
 		const isZipcode = 'zipcode' in input;
 
-		let weather, location;
+		let weather, location, coords;
 		if (isLatLon) {
 			const url = `${env.API_URL}/forecast/${env.API_KEY}/${input.lat},${input.lon}?exclude=minutely,currently`;
 			const geoUrl = `${env.GEO_URL}&x=${input.lon}&y=${input.lat}`;
@@ -32,6 +32,7 @@ export const router = t.router({
 			]);
 
 			location = location.result.geographies['County Subdivisions'][0].BASENAME;
+			coords = { lat: Number(input.lat), lon: Number(input.lon) };
 		} else if (isZipcode) {
 			const locationResponse = await fetch(
 				`https://api.zippopotam.us/us/${input.zipcode}?units=us`
@@ -44,9 +45,14 @@ export const router = t.router({
 			weather = await response.json();
 
 			location = locationData.places[0]['place name'];
+			coords = {
+				lat: Number(locationData.places[0].latitude),
+				lon: Number(locationData.places[0].longitude)
+			};
 		}
 
 		return {
+			coords: coords as { lat: number; lon: number },
 			weather: weather as WeatherResponse,
 			location: location as string
 		};

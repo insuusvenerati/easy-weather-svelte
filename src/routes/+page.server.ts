@@ -8,16 +8,10 @@ export const load = ((event) => {
 	const zipcode = url.searchParams.get('zipcode');
 	const lat = url.searchParams.get('lat');
 	const lon = url.searchParams.get('lon');
-	const coordsPromise = new Promise<{ lat: number; lon: number }>((resolve) => {
-		if (lat && lon) {
-			resolve({ lat: Number(lat), lon: Number(lon) });
-		}
-	});
 
 	if (lat && lon) {
 		return {
 			streamed: {
-				coords: coordsPromise,
 				weather: router.createCaller(createContext(event)).weather({ lat, lon })
 			}
 		};

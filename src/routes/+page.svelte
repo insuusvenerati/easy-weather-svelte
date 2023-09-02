@@ -17,7 +17,7 @@
 </svelte:head>
 
 <div class="flex flex-col gap-4">
-	{#await data.streamed?.coords}
+	{#await data.streamed?.weather}
 		<ProgressRadial
 			width="w-12"
 			stroke={65}
@@ -31,13 +31,13 @@
 					<AccordionItem>
 						<svelte:fragment slot="summary">Weather Radar</svelte:fragment>
 						<svelte:fragment slot="content">
-							<WeatherRadar {coords} />
+							<WeatherRadar coords={coords.coords} />
 						</svelte:fragment>
 					</AccordionItem>
 					<AccordionItem>
 						<svelte:fragment slot="summary">Hurricane Radar</svelte:fragment>
 						<svelte:fragment slot="content">
-							<HurricaneRadar {coords} />
+							<HurricaneRadar coords={coords.coords} />
 						</svelte:fragment>
 					</AccordionItem>
 				</div>
