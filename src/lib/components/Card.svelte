@@ -25,7 +25,7 @@
 	} = day;
 </script>
 
-<div class="card card-hover variant-glass-primary p-4">
+<div class="card card-hover variant-glass-surface p-4">
 	<header class="card-header">
 		<h2 class="text-2xl font-bold">{formatTime(day.time).dayOfWeek}</h2>
 		<h3 class="text-xl font-medium">{city}</h3>
