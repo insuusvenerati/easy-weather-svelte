@@ -14,6 +14,11 @@
 	let notSupported: boolean;
 </script>
 
+<svelte:head>
+	<title>Easy Weather</title>
+	<meta name="description" content="Weather, but easy." />
+</svelte:head>
+
 <Geolocation getPosition bind:notSupported bind:success bind:coords />
 <AppShell slotPageContent="p-4" slotPageHeader="p-4">
 	<svelte:fragment slot="header">
@@ -22,7 +27,12 @@
 				<a href="/">Easy Weather ⛅</a>
 			</h1>
 
-			<ThemeSwitch />
+			<div class="flex items-center">
+				<h1 class="font-bold p-4">
+					<a href="/trucking">Trucking</a>
+				</h1>
+				<ThemeSwitch />
+			</div>
 		</div>
 	</svelte:fragment>
 	<svelte:fragment slot="pageHeader">
@@ -30,7 +40,7 @@
 			<Search />
 			{#if success && !notSupported}
 				<a
-					href={`/?lat=${coords[1]}&lon=${coords[0]}`}
+					href={`/weather/?lat=${coords[1]}&lon=${coords[0]}`}
 					class="btn variant-soft-primary max-w-xs font-bold">🌍 Use Location</a
 				>
 			{/if}

@@ -28,10 +28,10 @@
 </script>
 
 <!-- Theme -->
-<div class="mr-4">
+<div>
 	<!-- trigger -->
 	<button
-		class="btn hover:variant-soft-primary"
+		class="btn variant-filled"
 		use:popup={{ event: 'click', target: 'theme', closeQuery: 'a[href]' }}
 	>
 		<i class="fa-solid fa-palette text-lg md:!hidden" />
