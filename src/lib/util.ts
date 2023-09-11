@@ -51,11 +51,15 @@ export const isValidUSZip = (sZip: string) => {
 };
 
 export const getCoordsByZipcode = async (zipcode: string | number) => {
-	const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);
-	const locationData: LocationData = await locationResponse.json();
+	try {
+		const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);
+		const locationData: LocationData = await locationResponse.json();
 
-	return {
-		lat: Number(locationData.places[0].latitude),
-		lon: Number(locationData.places[0].longitude)
-	};
+		return {
+			lat: Number(locationData.places[0].latitude),
+			lon: Number(locationData.places[0].longitude)
+		};
+	} catch (error) {
+		console.error(error);
+	}
 };
