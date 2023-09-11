@@ -10,6 +10,7 @@ export const load = (async ({ url, fetch }) => {
 	invariant(lat && lon, 'Missing lat/lon');
 
 	const zipcode = await getZipcodeByCoords({ lat, lon, fetch });
+	invariant(zipcode, 'No zipcode found for coordinates');
 
 	throw redirect(307, `/weather/${zipcode}`);
 }) satisfies PageServerLoad;
