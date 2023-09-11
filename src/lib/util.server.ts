@@ -35,10 +35,17 @@ export const getZipcodeByCoords = async ({
 	try {
 		const geoUrl = `${env.NOMINATIM_API_URL}&lon=${lon}&lat=${lat}`;
 
-		const locationResponse: NominatimResponse = await fetch(geoUrl).then((res) => res.json());
-		console.log(locationResponse);
+		const locationResponse = await fetch(geoUrl);
 
-		return locationResponse.address.postcode;
+		if (!locationResponse.ok) {
+			throw new Error(
+				`Failed to get zipcode for coordinates ${lat}, ${lon}: ${locationResponse.statusText}`
+			);
+		}
+
+		const location: NominatimResponse = await locationResponse.json();
+
+		return location.address.postcode;
 	} catch (error) {
 		console.error(`Failed to get zipcode for coordinates ${lat}, ${lon}:/n ${error}`);
 	}
