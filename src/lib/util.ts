@@ -60,6 +60,6 @@ export const getCoordsByZipcode = async (zipcode: string | number) => {
 			lon: Number(locationData.places[0].longitude)
 		};
 	} catch (error) {
-		console.error(error);
+		console.error(`Failed to get coordinates for zipcode ${zipcode}:/n ${error}`);
 	}
 };
