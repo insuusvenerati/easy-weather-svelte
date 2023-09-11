@@ -36,6 +36,7 @@ export const getZipcodeByCoords = async ({
 		const geoUrl = `${env.NOMINATIM_API_URL}&lon=${lon}&lat=${lat}`;
 
 		const locationResponse: NominatimResponse = await fetch(geoUrl).then((res) => res.json());
+		console.log(locationResponse);
 
 		return locationResponse.address.postcode;
 	} catch (error) {
