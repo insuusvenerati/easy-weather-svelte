@@ -40,7 +40,7 @@
 			<Search />
 			{#if success && !notSupported}
 				<a
-					href={`/weather/?lat=${coords[1]}&lon=${coords[0]}`}
+					href={`/weather?lat=${coords[1]}&lon=${coords[0]}`}
 					class="btn variant-soft-primary max-w-xs font-bold">🌍 Use Location</a
 				>
 			{/if}
