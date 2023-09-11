@@ -1,12 +1,13 @@
-import { createContext } from '$lib/trpc/context';
-import { router } from '$lib/trpc/router';
+import { getCoordsByZipcode } from '$lib/util';
+import { getWeather } from '$lib/util.server';
 import type { PageServerLoad } from './$types';
 
-export const load = ((event) => {
+export const load = (async (event) => {
 	const { params } = event;
 	const { zipcode } = params;
+	const { lat, lon } = await getCoordsByZipcode(zipcode);
 
 	return {
-		streamed: { weather: router.createCaller(createContext(event)).weather({ zipcode }) }
+		streamed: { weather: getWeather({ lat, lon }) }
 	};
 }) satisfies PageServerLoad;

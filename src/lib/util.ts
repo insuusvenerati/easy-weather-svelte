@@ -1,3 +1,5 @@
+import type { LocationData } from './types/location';
+
 export const WEATHER_ICON_URL =
 	'https://raw.githubusercontent.com/basmilius/weather-icons/dev/production/line/svg/';
 
@@ -46,4 +48,14 @@ export const getPrecipIntensity = (intensity: number) => {
 
 export const isValidUSZip = (sZip: string) => {
 	return /^\d{5}(?:[-\s]\d{4})?$/.test(sZip);
+};
+
+export const getCoordsByZipcode = async (zipcode: string | number) => {
+	const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);
+	const locationData: LocationData = await locationResponse.json();
+
+	return {
+		lat: Number(locationData.places[0].latitude),
+		lon: Number(locationData.places[0].longitude)
+	};
 };
