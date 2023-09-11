@@ -1,3 +1,4 @@
+import invariant from 'tiny-invariant';
 import type { LocationData } from './types/location';
 
 export const WEATHER_ICON_URL =
@@ -52,6 +53,8 @@ export const isValidUSZip = (sZip: string) => {
 
 export const getCoordsByZipcode = async (zipcode: string | number) => {
 	try {
+		invariant(isValidUSZip(zipcode.toString()), 'Invalid zipcode');
+		invariant(zipcode, 'No zipcode provided');
 		const locationResponse = await fetch(`https://api.zippopotam.us/us/${zipcode}?units=us`);
 		const locationData: LocationData = await locationResponse.json();
 
