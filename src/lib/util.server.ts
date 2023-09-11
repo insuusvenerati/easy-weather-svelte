@@ -39,6 +39,6 @@ export const getZipcodeByCoords = async ({
 
 		return locationResponse.address.postcode;
 	} catch (error) {
-		console.error(error);
+		console.error(`Failed to get zipcode for coordinates ${lat}, ${lon}:/n ${error}`);
 	}
 };
