@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  '@fortawesome/fontawesome-free':
+    specifier: ^6.4.2
+    version: 6.4.2
+
 devDependencies:
   '@floating-ui/dom':
     specifier: ^1.5.1
@@ -11,9 +16,6 @@ devDependencies:
   '@flydotio/dockerfile':
     specifier: ^0.4.8
     version: 0.4.8
-  '@fortawesome/fontawesome-free':
-    specifier: ^6.4.2
-    version: 6.4.2
   '@playwright/test':
     specifier: ^1.37.1
     version: 1.37.1
@@ -388,7 +390,7 @@ packages:
     resolution: {integrity: sha512-m5cPn3e2+FDCOgi1mz0RexTUvvQibBebOUlUlW0+YrMjDTPkiJ6VTKukA1GRsvRw+12KyJndNjj0O4AgTxm2Pg==}
     engines: {node: '>=6'}
     requiresBuild: true
-    dev: true
+    dev: false
 
   /@humanwhocodes/config-array@0.11.10:
     resolution: {integrity: sha512-KVVjQmNUepDVGXNuoRRdmmEjruj0KfiGSbS8LVc12LMsWDQzRXJ0qdhN8L8uUigKpfEHRhlaQFY0ib1tnUbNeQ==}
