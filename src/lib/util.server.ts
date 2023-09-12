@@ -35,18 +35,22 @@ export const getZipcodeByCoords = async ({
 	try {
 		const geoUrl = `${env.NOMINATIM_API_URL}&lon=${lon}&lat=${lat}`;
 
-		const locationResponse = await fetch(geoUrl);
+		const locationResponse = await fetch(geoUrl, {
+			headers: {
+				'User-Agent': 'weather-app',
+				age: '31536000',
+				'cache-control': 'max-age=31536000'
+			}
+		});
 
 		if (!locationResponse.ok) {
-			throw new Error(
-				`Failed to get zipcode for coordinates ${lat}, ${lon}: ${locationResponse.statusText}`
-			);
+			throw new Error(locationResponse.statusText);
 		}
 
 		const location: NominatimResponse = await locationResponse.json();
 
 		return location.address.postcode;
 	} catch (error) {
-		console.error(`Failed to get zipcode for coordinates ${lat}, ${lon}:/n ${error}`);
+		console.error(`Failed to get zipcode for coordinates ${lat}, ${lon}: ${error}`);
 	}
 };

@@ -20,7 +20,7 @@
 </svelte:head>
 
 <Geolocation getPosition bind:notSupported bind:success bind:coords />
-<AppShell slotPageContent="p-4" slotPageHeader="p-4">
+<AppShell slotPageFooter="p-4" slotPageContent="p-4" slotPageHeader="p-4">
 	<svelte:fragment slot="header">
 		<div class="flex justify-between items-center">
 			<h1 class="text-4xl font-bold p-4">
@@ -47,4 +47,9 @@
 		</div>
 	</svelte:fragment>
 	<slot />
+	<svelte:fragment slot="pageFooter">
+		<a target="_blank" rel="noopener noreferrer" href="https://openstreetmap.org/copyright"
+			>OpenStreetMap</a
+		>
+	</svelte:fragment>
 </AppShell>
