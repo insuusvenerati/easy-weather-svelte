@@ -2,10 +2,24 @@
 	import Search from '$lib/components/Search.svelte';
 	import ThemeSwitch from '$lib/components/ThemeSwitch.svelte';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
-	import { AppShell, storePopup } from '@skeletonlabs/skeleton';
+	import {
+		AppBar,
+		AppShell,
+		Drawer,
+		getDrawerStore,
+		initializeStores,
+		storePopup
+	} from '@skeletonlabs/skeleton';
 	import Geolocation from 'svelte-geolocation';
 	import type { GeolocationCoords } from 'svelte-geolocation/types/Geolocation.svelte';
 	import '../app.css';
+	import Navigation from '$lib/components/Navigation.svelte';
+	initializeStores();
+
+	const drawerStore = getDrawerStore();
+	function drawerOpen(): void {
+		drawerStore.open({});
+	}
 
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
@@ -20,23 +34,39 @@
 </svelte:head>
 
 <Geolocation getPosition bind:notSupported bind:success bind:coords />
-<AppShell slotPageFooter="p-4" slotPageContent="p-4" slotPageHeader="p-4">
-	<svelte:fragment slot="header">
-		<div class="flex justify-between items-center">
-			<h1 class="text-4xl font-bold p-4">
-				<a href="/">Easy Weather ⛅</a>
-			</h1>
-
-			<div class="flex items-center">
-				<h1 class="font-bold p-4">
-					<a href="/trucking">Trucking</a>
-				</h1>
-				<ThemeSwitch />
-			</div>
+<AppBar>
+	<svelte:fragment slot="lead">
+		<div class="flex items-center">
+			<button on:click={drawerOpen} class="lg:hidden btn btn-sm mr-4">
+				<span>
+					<svg viewBox="0 0 100 80" class="fill-token w-4 h-4">
+						<rect width="100" height="20" />
+						<rect y="30" width="100" height="20" />
+						<rect y="60" width="100" height="20" />
+					</svg>
+				</span>
+			</button>
+			<a href="/">
+				<strong class="text-xl uppercase"> Easy Weather ⛅ </strong>
+			</a>
 		</div>
 	</svelte:fragment>
+	<svelte:fragment slot="trail"><ThemeSwitch /></svelte:fragment>
+</AppBar>
+<Drawer>
+	<Navigation />
+</Drawer>
+<AppShell
+	slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64"
+	slotPageFooter="p-4"
+	slotPageContent="p-4"
+	slotPageHeader="p-4"
+>
+	<svelte:fragment slot="sidebarLeft">
+		<Navigation />
+	</svelte:fragment>
 	<svelte:fragment slot="pageHeader">
-		<div class="flex gap-4 flex-col">
+		<div class="flex flex-col lg:flex-row gap-4">
 			<Search />
 			{#if success && !notSupported}
 				<a

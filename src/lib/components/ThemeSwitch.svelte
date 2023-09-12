@@ -28,15 +28,14 @@
 </script>
 
 <!-- Theme -->
-<div>
+<div class="mr-4">
 	<!-- trigger -->
 	<button
-		class="btn variant-filled"
+		class="btn-icon variant-filled"
+		type="button"
 		use:popup={{ event: 'click', target: 'theme', closeQuery: 'a[href]' }}
 	>
-		<i class="fa-solid fa-palette text-lg md:!hidden" />
-		<span class="hidden md:inline-block">Theme</span>
-		<i class="fa-solid fa-caret-down opacity-50" />
+		<i class="fa-solid fa-palette text-lg" />
 	</button>
 	<!-- popup -->
 	<div class="card p-4 w-60 shadow-xl" data-popup="theme">
