@@ -34,25 +34,7 @@
 </svelte:head>
 
 <Geolocation getPosition bind:notSupported bind:success bind:coords />
-<AppBar>
-	<svelte:fragment slot="lead">
-		<div class="flex items-center">
-			<button on:click={drawerOpen} class="lg:hidden btn btn-sm mr-4">
-				<span>
-					<svg viewBox="0 0 100 80" class="fill-token w-4 h-4">
-						<rect width="100" height="20" />
-						<rect y="30" width="100" height="20" />
-						<rect y="60" width="100" height="20" />
-					</svg>
-				</span>
-			</button>
-			<a href="/">
-				<strong class="text-xl uppercase"> Easy Weather ⛅ </strong>
-			</a>
-		</div>
-	</svelte:fragment>
-	<svelte:fragment slot="trail"><ThemeSwitch /></svelte:fragment>
-</AppBar>
+
 <Drawer>
 	<Navigation />
 </Drawer>
@@ -64,6 +46,27 @@
 >
 	<svelte:fragment slot="sidebarLeft">
 		<Navigation />
+	</svelte:fragment>
+	<svelte:fragment slot="header">
+		<AppBar>
+			<svelte:fragment slot="lead">
+				<div class="flex items-center">
+					<button on:click={drawerOpen} class="lg:hidden btn btn-sm mr-4">
+						<span>
+							<svg viewBox="0 0 100 80" class="fill-token w-4 h-4">
+								<rect width="100" height="20" />
+								<rect y="30" width="100" height="20" />
+								<rect y="60" width="100" height="20" />
+							</svg>
+						</span>
+					</button>
+					<a href="/">
+						<strong class="text-xl uppercase"> Easy Weather ⛅ </strong>
+					</a>
+				</div>
+			</svelte:fragment>
+			<svelte:fragment slot="trail"><ThemeSwitch /></svelte:fragment>
+		</AppBar>
 	</svelte:fragment>
 	<svelte:fragment slot="pageHeader">
 		<div class="flex flex-col lg:flex-row gap-4">
@@ -78,8 +81,8 @@
 	</svelte:fragment>
 	<slot />
 	<svelte:fragment slot="pageFooter">
-		<a target="_blank" rel="noopener noreferrer" href="https://openstreetmap.org/copyright"
-			>OpenStreetMap</a
-		>
+		<a target="_blank" rel="noopener noreferrer" href="https://openstreetmap.org/copyright">
+			OpenStreetMap
+		</a>
 	</svelte:fragment>
 </AppShell>
