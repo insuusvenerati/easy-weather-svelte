@@ -55,7 +55,7 @@
 					<header class="card-header text-2xl font-bold mb-4">
 						Today's forecast for {weather.location}
 					</header>
-					<section class="flex flex-col lg:flex-row justify-between text-center">
+					<section class="grid grid-cols-2 lg:flex lg:flex-row justify-between text-center">
 						{#each weather?.weather.hourly.data.slice(0, 7) as time}
 							<div class="flex flex-col items-center gap-1">
 								<span class="text-tertiary-500">
