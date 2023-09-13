@@ -1,12 +1,11 @@
 <script lang="ts">
 	import Alerts from '$lib/components/Alerts.svelte';
 	import Card from '$lib/components/Card.svelte';
-	import DetailedWeather from '$lib/components/DetailedWeather.svelte';
+	import HurricaneRadar from '$lib/components/HurricaneRadar.svelte';
+	import WeatherRadar from '$lib/components/WeatherRadar.svelte';
 	import { getWeatherIconUrl } from '$lib/util';
 	import { Accordion, AccordionItem, ProgressRadial } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
-	import WeatherRadar from '$lib/components/WeatherRadar.svelte';
-	import HurricaneRadar from '$lib/components/HurricaneRadar.svelte';
 
 	export let data: PageData;
 </script>
@@ -65,29 +64,125 @@
 			</Accordion>
 		</section>
 
-		<section class="flex gap-4 overflow-x-auto overflow-y-hidden">
-			<Accordion>
-				{#if weather?.weather.hourly.data}
-					<div class="flex gap-4">
+		<!-- Hourly -->
+		<section>
+			{#if weather?.weather.hourly.data}
+				<div class="card p-4">
+					<header class="card-header text-2xl font-bold mb-4">
+						Today's forecast for {weather.location}
+					</header>
+					<section class="flex flex-row justify-between text-center">
 						{#each weather?.weather.hourly.data.slice(0, 7) as time}
-							<AccordionItem>
-								<svelte:fragment slot="lead">
-									<img src={getWeatherIconUrl(time.icon)} alt={time.summary} class="w-10 h-10" />
-								</svelte:fragment>
-								<svelte:fragment slot="summary">
-									<span class="font-bold">
-										{time.temperature.toFixed(0)}°F
-									</span>
-									{new Date(time.time * 1000).toLocaleString()}
-								</svelte:fragment>
-								<svelte:fragment slot="content">
-									<DetailedWeather detailedData={time} />
-								</svelte:fragment>
-							</AccordionItem>
+							<div class="flex flex-col gap-1">
+								<span class="text-tertiary-500">
+									{new Date(time.time * 1000).toLocaleTimeString()}
+								</span>
+								<span class="text-xl">
+									{time.temperature.toFixed(0)}°F
+								</span>
+								<img class="w-28 h-3w-28" src={getWeatherIconUrl(time.icon)} alt={time.summary} />
+								<span>
+									{time.precipProbability > 0
+										? `⛈️ ${Math.round(time.precipProbability * 100)}%`
+										: '--'}
+								</span>
+							</div>
 						{/each}
+					</section>
+				</div>
+			{/if}
+		</section>
+
+		<!-- Currently -->
+		<!-- Displays feels like temperature, high / low temp, humidity, wind speed, sunrise / sunset, moon phase, pressure, visibility, UV Index, dew point, and cloud cover -->
+		<section>
+			{#if weather?.weather.currently}
+				<div class="card p-4">
+					<header class="card-header text-2xl font-bold mb-4">
+						Currently in {weather.location}
+					</header>
+					<div class="flex flex-wrap max-w-lg min-w-[500px]">
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Feels like </span>
+							<span class="text-xl">
+								{weather?.weather.currently.apparentTemperature.toFixed(0)}°F
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> High </span>
+							<span class="text-xl">
+								{weather?.weather.daily.data[0].temperatureMax.toFixed(0)}°F
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Low </span>
+							<span class="text-xl">
+								{weather?.weather.daily.data[0].temperatureMin.toFixed(0)}°F
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Humidity </span>
+							<span class="text-xl">
+								{(weather?.weather.currently.humidity * 100).toPrecision(2)}%
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Wind Speed </span>
+							<span class="text-xl">
+								{weather?.weather.currently.windSpeed} m/s
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Sunrise </span>
+							<span class="text-xl">
+								{new Date(weather?.weather.daily.data[0].sunriseTime * 1000).toLocaleTimeString()}
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Sunset </span>
+							<span class="text-xl">
+								{new Date(weather?.weather.daily.data[0].sunsetTime * 1000).toLocaleTimeString()}
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Moon Phase </span>
+							<span class="text-xl">
+								{weather?.weather.daily.data[0].moonPhase}
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Pressure </span>
+							<span class="text-xl">
+								{weather?.weather.currently.pressure} hPa
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Visibility </span>
+							<span class="text-xl">
+								{weather?.weather.currently.visibility} miles
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> UV Index </span>
+							<span class="text-xl">
+								{weather?.weather.currently.uvIndex}
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Dew Point </span>
+							<span class="text-xl">
+								{weather?.weather.currently.dewPoint}°F
+							</span>
+						</div>
+						<div class="flex flex-col gap-1 grow shrink">
+							<span class="text-tertiary-500"> Cloud Cover </span>
+							<span class="text-xl">
+								{(weather?.weather.currently.cloudCover * 100).toPrecision(2)}%
+							</span>
+						</div>
 					</div>
-				{/if}
-			</Accordion>
+				</div>
+			{/if}
 		</section>
 
 		<section>

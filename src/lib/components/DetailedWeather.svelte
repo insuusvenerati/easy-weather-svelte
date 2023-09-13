@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Currently } from '$lib/types/weather';
-	import { getPrecipIntensity, getWeatherIconUrl } from '$lib/util';
+	import { getPrecipIntensity } from '$lib/util';
 
 	export let detailedData: Currently;
 </script>

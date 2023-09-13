@@ -4,7 +4,7 @@ import type { NominatimResponse } from './types/nominatim';
 import type { WeatherResponse } from './types/weather';
 
 export const getWeather = async ({ lat, lon }: { lat: string | number; lon: string | number }) => {
-	const url = `${env.API_URL}/forecast/${env.API_KEY}/${lat},${lon}?exclude=minutely,currently`;
+	const url = `${env.API_URL}/forecast/${env.API_KEY}/${lat},${lon}?exclude=minutely`;
 	const geoUrl = `${env.GEO_URL}&x=${lon}&y=${lat}`;
 
 	try {

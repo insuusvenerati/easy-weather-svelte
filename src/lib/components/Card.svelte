@@ -21,7 +21,8 @@
 		windSpeed,
 		sunriseTime,
 		sunsetTime,
-		moonPhase
+		moonPhase,
+		precipProbability
 	} = day;
 </script>
 
@@ -41,7 +42,7 @@
 			<span class="text-3xl">{temperatureMin}&deg;F</span>
 		</div>
 	</section>
-	<footer class="card-footer flex items-center justify-between mt-4">
+	<footer class="card-footer flex items-center text-center justify-between mt-4">
 		<div class="flex flex-col">
 			<span class="text-gray-300">Humidity</span>
 			<span class="text-lg font-medium">{(humidity * 100).toPrecision(2)}%</span>
@@ -58,7 +59,12 @@
 			<span class="text-gray-300">Sunset</span>
 			<span class="text-lg font-medium">{formatTime(sunsetTime).time}</span>
 		</div>
-		<div>
+		<div class="flex flex-col">
+			<span>Rain</span>
+			{precipProbability > 0 ? `⛈️ ${Math.round(precipProbability * 100)}%` : '--'}
+		</div>
+		<div class="flex flex-col">
+			<span>Moon</span>
 			<img class="w-10 h-10" src={getMoonphaseIconUrl(moonPhase)} alt={moonPhase.toString()} />
 		</div>
 	</footer>
