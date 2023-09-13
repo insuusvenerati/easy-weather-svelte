@@ -29,33 +29,6 @@
 			meter="stroke-primary-500"
 			track="stroke-primary-500/30"
 		/>
-	{:then coords}
-		{#if coords}
-			<Accordion regionPanel="h-screen">
-				<div class="flex flex-col md:flex-row gap-4">
-					<AccordionItem>
-						<svelte:fragment slot="summary">Weather Radar</svelte:fragment>
-						<svelte:fragment slot="content">
-							<WeatherRadar coords={coords.coords} />
-						</svelte:fragment>
-					</AccordionItem>
-					<AccordionItem>
-						<svelte:fragment slot="summary">Hurricane Radar</svelte:fragment>
-						<svelte:fragment slot="content">
-							<HurricaneRadar coords={coords.coords} />
-						</svelte:fragment>
-					</AccordionItem>
-				</div>
-			</Accordion>
-		{/if}
-	{/await}
-	{#await data.streamed?.weather}
-		<ProgressRadial
-			width="w-12"
-			stroke={65}
-			meter="stroke-primary-500"
-			track="stroke-primary-500/30"
-		/>
 	{:then weather}
 		<section>
 			<Accordion>
@@ -202,6 +175,20 @@
 						</div>
 					</div>
 				</div>
+			{/if}
+		</section>
+
+		<!-- Radar -->
+		<section>
+			{#if weather?.coords}
+				<WeatherRadar coords={weather.coords} />
+			{/if}
+		</section>
+
+		<!-- Hurricane Radar -->
+		<section>
+			{#if weather?.coords}
+				<HurricaneRadar coords={weather.coords} />
 			{/if}
 		</section>
 
