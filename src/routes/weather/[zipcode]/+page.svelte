@@ -3,9 +3,20 @@
 	import Card from '$lib/components/Card.svelte';
 	import HurricaneRadar from '$lib/components/HurricaneRadar.svelte';
 	import WeatherRadar from '$lib/components/WeatherRadar.svelte';
-	import { getWeatherIconUrl } from '$lib/util';
+	import { getMoonphaseIconUrl, getWeatherIconUrl } from '$lib/util';
 	import { Accordion, AccordionItem, ProgressRadial } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
+	import Temperature from '$lib/components/icons/Temperature.svelte';
+	import Humidity from '$lib/components/icons/Humidity.svelte';
+	import Wind from '$lib/components/icons/Wind.svelte';
+	import Dew from '$lib/components/icons/Dew.svelte';
+	import Pressure from '$lib/components/icons/Pressure.svelte';
+	import UvIndex from '$lib/components/icons/UVIndex.svelte';
+	import Visibility from '$lib/components/icons/Visibility.svelte';
+	import MoonPhase from '$lib/components/icons/MoonPhase.svelte';
+	import Cloud from '$lib/components/icons/Cloud.svelte';
+	import Sunset from '$lib/components/icons/Sunset.svelte';
+	import Sunrise from '$lib/components/icons/Sunrise.svelte';
 
 	export let data: PageData;
 </script>
@@ -71,9 +82,9 @@
 					<header class="card-header text-2xl font-bold mb-4">
 						Today's forecast for {weather.location}
 					</header>
-					<section class="flex flex-row justify-between text-center">
+					<section class="flex flex-col lg:flex-row justify-between text-center">
 						{#each weather?.weather.hourly.data.slice(0, 7) as time}
-							<div class="flex flex-col gap-1">
+							<div class="flex flex-col items-center gap-1">
 								<span class="text-tertiary-500">
 									{new Date(time.time * 1000).toLocaleTimeString()}
 								</span>
@@ -94,88 +105,97 @@
 		</section>
 
 		<!-- Currently -->
-		<!-- Displays feels like temperature, high / low temp, humidity, wind speed, sunrise / sunset, moon phase, pressure, visibility, UV Index, dew point, and cloud cover -->
 		<section>
 			{#if weather?.weather.currently}
 				<div class="card p-4">
 					<header class="card-header text-2xl font-bold mb-4">
 						Currently in {weather.location}
-					</header>
-					<div class="flex flex-wrap max-w-lg min-w-[500px]">
-						<div class="flex flex-col gap-1 grow shrink">
+						<div class="flex flex-col gap-1">
 							<span class="text-tertiary-500"> Feels like </span>
-							<span class="text-xl">
+							<span class="text-4xl">
 								{weather?.weather.currently.apparentTemperature.toFixed(0)}°F
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> High </span>
+					</header>
+					<div class="grid grid-cols-1 gap-x-4 lg:grid-cols-2">
+						<div class="flex items-center gap-1 justify-between">
+							<Temperature />
+							<span class="weather-item_label">High / Low</span>
 							<span class="text-xl">
-								{weather?.weather.daily.data[0].temperatureMax.toFixed(0)}°F
+								{weather?.weather.daily.data[0].temperatureMax.toFixed(0)}°F /
+								<span class="text-xl">
+									{weather?.weather.daily.data[0].temperatureMin.toFixed(0)}°F
+								</span>
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Low </span>
-							<span class="text-xl">
-								{weather?.weather.daily.data[0].temperatureMin.toFixed(0)}°F
-							</span>
-						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Humidity </span>
+						<div class="flex items-center gap-1 justify-between">
+							<Humidity />
+							<span class="weather-item_label"> Humidity </span>
 							<span class="text-xl">
 								{(weather?.weather.currently.humidity * 100).toPrecision(2)}%
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Wind Speed </span>
+						<div class="flex items-center gap-1 justify-between">
+							<Wind />
+							<span class="weather-item_label"> Wind Speed </span>
 							<span class="text-xl">
 								{weather?.weather.currently.windSpeed} m/s
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Sunrise </span>
+						<div class="flex items-center gap-1 justify-between">
+							<Sunrise />
+							<span class="weather-item_label"> Sunrise </span>
 							<span class="text-xl">
 								{new Date(weather?.weather.daily.data[0].sunriseTime * 1000).toLocaleTimeString()}
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Sunset </span>
+						<div class="flex items-center gap-1 justify-between">
+							<Sunset />
+							<span class="weather-item_label"> Sunset </span>
 							<span class="text-xl">
 								{new Date(weather?.weather.daily.data[0].sunsetTime * 1000).toLocaleTimeString()}
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Moon Phase </span>
-							<span class="text-xl">
-								{weather?.weather.daily.data[0].moonPhase}
-							</span>
+						<div class="flex items-center gap-1 justify-between">
+							<MoonPhase />
+							<span class="weather-item_label"> Moon Phase </span>
+							<img
+								src={getMoonphaseIconUrl(weather?.weather.daily.data[0].moonPhase)}
+								alt="moon phase"
+								class="w-8 h-8"
+							/>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Pressure </span>
+						<div class="flex items-center gap-1 justify-between">
+							<Pressure />
+							<span class="weather-item_label"> Pressure </span>
 							<span class="text-xl">
 								{weather?.weather.currently.pressure} hPa
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Visibility </span>
+						<div class="flex items-center gap-1 justify-between">
+							<Visibility />
+							<span class="weather-item_label"> Visibility </span>
 							<span class="text-xl">
 								{weather?.weather.currently.visibility} miles
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> UV Index </span>
+						<div class="flex items-center gap-1 justify-between">
+							<UvIndex />
+							<span class="weather-item_label"> UV Index </span>
 							<span class="text-xl">
 								{weather?.weather.currently.uvIndex}
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Dew Point </span>
+						<div class="flex items-center gap-1 justify-between">
+							<Dew />
+							<span class="weather-item_label"> Dew Point </span>
 							<span class="text-xl">
 								{weather?.weather.currently.dewPoint}°F
 							</span>
 						</div>
-						<div class="flex flex-col gap-1 grow shrink">
-							<span class="text-tertiary-500"> Cloud Cover </span>
+						<div class="flex items-center gap-1 justify-between">
+							<Cloud />
+							<span class="weather-item_label"> Cloud Cover </span>
 							<span class="text-xl">
 								{(weather?.weather.currently.cloudCover * 100).toPrecision(2)}%
 							</span>
@@ -198,3 +218,9 @@
 		{error.message}
 	{/await}
 </div>
+
+<style lang="postcss">
+	.weather-item_label {
+		@apply text-tertiary-500 grow;
+	}
+</style>
