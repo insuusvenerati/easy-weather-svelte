@@ -1,5 +1,5 @@
 import { getCoordsByZipcode } from '$lib/util';
-import { getWeather } from '$lib/util.server';
+import { getWeather } from '$lib/utils.server';
 import invariant from 'tiny-invariant';
 import type { PageServerLoad } from './$types';
 
