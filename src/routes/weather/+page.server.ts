@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from '../$types';
-import { getZipcodeByCoords } from '$lib/util.server';
+import { getZipcodeByCoords } from '$lib/utils.server';
 import invariant from 'tiny-invariant';
 
 export const load = (async ({ url, fetch, setHeaders }) => {
