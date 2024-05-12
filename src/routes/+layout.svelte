@@ -44,9 +44,9 @@
 	slotPageContent="p-4"
 	slotPageHeader="p-4"
 >
-	<svelte:fragment slot="sidebarLeft">
+	<!-- <svelte:fragment slot="sidebarLeft">
 		<Navigation />
-	</svelte:fragment>
+	</svelte:fragment> -->
 	<svelte:fragment slot="header">
 		<AppBar>
 			<svelte:fragment slot="lead">
